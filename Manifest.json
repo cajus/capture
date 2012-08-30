@@ -1,0 +1,34 @@
+{
+  "info" : 
+  {
+    "name" : "capture",
+
+    "summary" : "Capture Contribution",
+    "description" : "This is a skeleton for a qooxdoo contribution.",
+    
+    "homepage" : "http://contrib.qooxdoo.org/project/capture",
+
+    "license" : "LGPL/EPL",
+    "authors" : 
+    [
+      {
+        "name" : "Cajus Pollmeier (cajus)",
+        "email" : "pollmeier@gonicus.de"
+      }
+    ],
+
+    "version" : "trunk",
+    "qooxdoo-versions": ["2.0"]
+  },
+  
+  "provides" : 
+  {
+    "namespace"   : "capture",
+    "encoding"    : "utf-8",
+    "class"       : "source/class",
+    "resource"    : "source/resource",
+    "translation" : "source/translation",
+    "type"        : "contribution"
+  }
+}
+

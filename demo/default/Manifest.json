@@ -1,0 +1,34 @@
+{
+  "info" : 
+  {
+    "name" : "capture Demo",
+
+    "summary" : "capture Demo",
+    "description" : "This is a skeleton for a qooxdoo contribution demo.",
+    
+    "homepage" : "http://demo.qooxdoo.org/contrib/capture",
+
+    "license" : "LGPL/EPL",
+    "authors" : 
+    [
+      {
+        "name" : "First Author (uid)",
+        "email" : "first.author@some.domain"
+      }
+    ],
+
+    "version" : "trunk",
+    "qooxdoo-versions": ["2.1_th_scopes"]
+  },
+  
+  "provides" : 
+  {
+    "namespace"   : "capture.demo",
+    "encoding"    : "utf-8",
+    "class"       : "source/class",
+    "resource"    : "source/resource",
+    "translation" : "source/translation",
+    "type"        : "application"
+  }
+}
+

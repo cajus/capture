@@ -1,0 +1,28 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: you@your.org\n"
+"POT-Creation-Date: 2012-08-30 10:15+0100\n"
+"PO-Revision-Date: 2012-08-30 10:15+0100\n"
+"Last-Translator: you <you@your.org>\n"
+"Language-Team: Team <yourteam@your.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: capture/demo/Application.js:76
+msgid "Start"
+msgstr "Start"
+
+#: capture/demo/Application.js:77
+msgid "Stop"
+msgstr "Stop"
+
+#: capture/demo/Application.js:78
+msgid "Capture"
+msgstr "Erfassen"
+
+#: capture/demo/Application.js:95
+msgid "Snapshot"
+msgstr "Schnappschuss"

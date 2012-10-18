@@ -41,6 +41,10 @@
  */
 
 
+/*
+#ignore(windowURL)
+ */
+
 
 /**
  * This is the main class of contribution "capture"

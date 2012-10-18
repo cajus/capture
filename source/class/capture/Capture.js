@@ -40,6 +40,9 @@
  * @childControl error-label {qx.ui.basic.Label} label containing the error message
  */
 
+/*
+#ignore(windowURL)
+ */
 
 /*
 #ignore(windowURL)

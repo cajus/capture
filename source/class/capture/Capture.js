@@ -183,13 +183,13 @@ qx.Class.define("capture.Capture",
      *
      * @return {string} Data URL of the image.
      */
-    getImageData : function(format, x, y, width, height, sx, sy, swidth, sheight) {
+    getImageData : function(format, x, y, width, height) {
       // Retrieve the current image as jpeg (default)
       if (!format) {
         format = 'jpeg';
       }
 
-      this.__context.drawImage(this.__video.getMediaObject(), x, y, width, height, sx, sy, swidth, sheight);
+      this.__context.drawImage(this.__video.getMediaObject(), x, y, this.__video.getVideoWidth(), this.__video.getVideoHeight(), 0, 0, width, height);
 
       return this.__canvas.getCanvas().toDataURL('image/' + format);
     },

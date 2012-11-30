@@ -70,6 +70,18 @@ qx.Class.define("capture.Capture",
       nullable : true,
       check : "String",
       event : "changeError"
+    },
+
+    captureSizeX :
+    {
+      check : "Integer",
+      init : 200
+    },
+
+    captureSizeY :
+    {
+      check : "Integer",
+      init : 200
     }
 
   },
@@ -85,7 +97,7 @@ qx.Class.define("capture.Capture",
    */
   construct : function() 
   {
-    this.base(arguments, new qx.ui.layout.HBox().set({alignY: 'middle', alignX: 'center'}));
+    this.base(arguments, new qx.ui.layout.Canvas());
     this.setBackgroundColor('black');
     this.setDecorator('main');
     this.__stream = null;
@@ -95,6 +107,7 @@ qx.Class.define("capture.Capture",
     video.setAutoplay(true);
     video.addListener("loadeddata", function() {
       this.getContentElement().getDomElement().appendChild(video.getMediaObject());
+      this._updateCaptureArea();
     }, this);
     this.__video = video;
 
@@ -105,6 +118,18 @@ qx.Class.define("capture.Capture",
     // Resize handling
     this.addListener("resize", this.__resize, this);
     this.__resize();
+
+    // Create border which frame the resulting image
+    var border_left = this._bleft = new qx.ui.container.Composite();
+    var border_right = this._bright = new qx.ui.container.Composite();
+    border_left.setBackgroundColor("#000000");
+    border_right.setBackgroundColor("#000000");
+    border_left.setOpacity(0.5);
+    border_right.setOpacity(0.5);
+    border_left.setWidth(40);
+    border_right.setWidth(40);
+    this.add(border_left);
+    this.add(border_right, {right:0});
 
     // Check if getUserMedia is supported
     if (!this.isSupported()) {
@@ -126,6 +151,33 @@ qx.Class.define("capture.Capture",
   },
 
   members : {
+
+    _bleft: null,
+    _bright: null,
+
+    /* Returns calculated image details, like clipping and the source dimensions
+     * to use while generating the resulting image.
+     * */
+    _imageDetails: function(){
+      var width = this.getCaptureSizeX();
+      var height = this.getCaptureSizeY();
+      var s_ratio = this.__video.getVideoWidth() / this.__video.getVideoHeight();
+      var d_ratio = width / height;
+      var new_width = (this.__video.getVideoWidth() / (s_ratio/d_ratio));
+      var x_clip = (this.__video.getVideoWidth() - new_width) / 2;
+      return({'width': new_width, 'height': this.__video.getVideoHeight(), 'x_clip': x_clip}); 
+    },
+
+
+    /**
+     * Set the width of the capture frame
+     * */
+    _updateCaptureArea: function(){
+      var x_clip = this._imageDetails()['x_clip'];
+      var scale = this.getWidth() / this.__video.getVideoWidth();
+      this._bleft.setWidth(x_clip * scale);
+      this._bright.setWidth(x_clip * scale);
+    },
 
     /**
      * Start life video capturing.
@@ -183,14 +235,19 @@ qx.Class.define("capture.Capture",
      *
      * @return {string} Data URL of the image.
      */
-    getImageData : function(format, x, y, width, height) {
+    getImageData : function(format){
       // Retrieve the current image as jpeg (default)
       if (!format) {
         format = 'jpeg';
       }
 
-      this.__context.drawImage(this.__video.getMediaObject(), x, y, this.__video.getVideoWidth(), this.__video.getVideoHeight(), 0, 0, width, height);
+      var width = this.getCaptureSizeX();
+      var height = this.getCaptureSizeY();
+      this.__canvas.setWidth(width);
+      this.__canvas.setHeight(height);
 
+      var details = this._imageDetails();
+      this.__context.drawImage(this.__video.getMediaObject(), details['x_clip'], 0, details['width'], details['height'], 0, 0, width , height);
       return this.__canvas.getCanvas().toDataURL('image/' + format);
     },
 
@@ -256,8 +313,6 @@ qx.Class.define("capture.Capture",
     __resize : function() {
       this.__video.setWidth(this.getWidth());
       this.__video.setHeight(this.getHeight());
-      this.__canvas.setWidth(this.getWidth());
-      this.__canvas.setHeight(this.getHeight());
     },
 
     /**

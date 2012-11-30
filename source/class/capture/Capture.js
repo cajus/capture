@@ -177,6 +177,8 @@ qx.Class.define("capture.Capture",
       var scale = this.getWidth() / this.__video.getVideoWidth();
       this._bleft.setWidth(x_clip * scale);
       this._bright.setWidth(x_clip * scale);
+      this._bleft.setHeight(this.getHeight());
+      this._bright.setHeight(this.getHeight());
     },
 
     /**

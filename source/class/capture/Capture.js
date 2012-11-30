@@ -44,10 +44,6 @@
 #ignore(windowURL)
  */
 
-/*
-#ignore(windowURL)
- */
-
 
 /**
  * This is the main class of contribution "capture"
@@ -107,6 +103,7 @@ qx.Class.define("capture.Capture",
     video.setAutoplay(true);
     video.addListener("loadeddata", function() {
       this.getContentElement().getDomElement().appendChild(video.getMediaObject());
+      qx.bom.element.Transform.scale(this.getContentElement().getDomElement(), [-1, 1]);
       this._updateCaptureArea();
     }, this);
     this.__video = video;

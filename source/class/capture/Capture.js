@@ -40,13 +40,11 @@
  * @childControl error-label {qx.ui.basic.Label} label containing the error message
  */
 
-/*
-#ignore(windowURL)
- */
-
 
 /**
  * This is the main class of contribution "capture"
+ *
+ * @lint ignoreUndefined(windowURL)
  */
 qx.Class.define("capture.Capture",
 {
@@ -151,6 +149,12 @@ qx.Class.define("capture.Capture",
 
     _bleft: null,
     _bright: null,
+   __canvas: null,
+   __context: null,
+   __msg: null,
+   __stream: null,
+   __video: null,
+
 
     /* Returns calculated image details, like clipping and the source dimensions
      * to use while generating the resulting image.

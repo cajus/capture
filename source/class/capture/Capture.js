@@ -332,9 +332,9 @@ qx.Class.define("capture.Capture",
      */
     __getUserMedia : function(props, success, error) {
       if (navigator.webkitGetUserMedia) {
-        return navigator.webkitGetUserMedia(props, success, error)
+        return navigator.webkitGetUserMedia(props, success, error);
       } else if (navigator.getUserMedia) {
-        return navigator.getUserMedia(props, success, error)
+        return navigator.mediaDevices.getUserMedia(props, success, error);
       } else {
         return undefined; 
       }

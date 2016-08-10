@@ -103,6 +103,7 @@ qx.Class.define("capture.Capture",
       this.getContentElement().getDomElement().appendChild(video.getMediaObject());
       qx.bom.element.Transform.scale(this.getContentElement().getDomElement(), [-1, 1]);
       this._updateCaptureArea();
+      video.play();
     }, this);
     this.__video = video;
 
@@ -211,11 +212,12 @@ qx.Class.define("capture.Capture",
         stream.onended = function(e) {
           that.fireEvent("stop"); 
         };
-      
+        
         that.getContentElement().getDomElement().appendChild(that.__video.getMediaObject());
         that.__stream = stream;
         that.fireEvent("start"); 
-      }, function(){
+
+      }, function(error){
         that.__msg.setValue(this.tr("Error capturing the video stream!"));
         that.__msg.show();
         that.__stop();
@@ -333,8 +335,10 @@ qx.Class.define("capture.Capture",
     __getUserMedia : function(props, success, error) {
       if (navigator.webkitGetUserMedia) {
         return navigator.webkitGetUserMedia(props, success, error);
-      } else if (navigator.getUserMedia) {
-        return navigator.mediaDevices.getUserMedia(props, success, error);
+      } else if (navigator.mediaDevices.getUserMedia) {
+        return navigator.mediaDevices.getUserMedia(props)
+          .then(success)
+          .catch(error);
       } else {
         return undefined; 
       }

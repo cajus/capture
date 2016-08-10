@@ -103,6 +103,7 @@ qx.Class.define("capture.Capture",
       this.getContentElement().getDomElement().appendChild(video.getMediaObject());
       qx.bom.element.Transform.scale(this.getContentElement().getDomElement(), [-1, 1]);
       this._updateCaptureArea();
+      video.play();
     }, this);
     this.__video = video;
 
@@ -205,16 +206,21 @@ qx.Class.define("capture.Capture",
         that.__video.onerror = function(e) {
           that.__msg.setValue(this.tr("Error capturing the video stream!"));
           that.__msg.show();
-          stream.stop();
+          that.__stop();
         };
       
         stream.onended = function(e) {
           that.fireEvent("stop"); 
         };
-      
+        
         that.getContentElement().getDomElement().appendChild(that.__video.getMediaObject());
         that.__stream = stream;
         that.fireEvent("start"); 
+
+      }, function(error){
+        that.__msg.setValue(this.tr("Error capturing the video stream!"));
+        that.__msg.show();
+        that.__stop();
       });
     },
 
@@ -227,7 +233,11 @@ qx.Class.define("capture.Capture",
         return;
       }
 
-      this.__stream.stop();
+      var msTracks = this.__stream.getTracks();
+      for (var track in msTracks){
+        msTracks[track].stop();
+      }
+
       this.__stream = null;
     },
 
@@ -261,7 +271,7 @@ qx.Class.define("capture.Capture",
      * @return {boolean}
      */  
     isSupported : function() {
-        return navigator.getUserMedia != undefined || navigator.webkitGetUserMedia != undefined;
+        return navigator.mediaDevices.getUserMedia != undefined || navigator.webkitGetUserMedia != undefined;
     },
 
     // overridden
@@ -322,11 +332,13 @@ qx.Class.define("capture.Capture",
      * Wrap getUserMedia to be a bit more browser independent. Could
      * use qx.bom.client later on.
      */
-    __getUserMedia : function(props, callback) {
+    __getUserMedia : function(props, success, error) {
       if (navigator.webkitGetUserMedia) {
-        return navigator.webkitGetUserMedia(props, callback)
-      } else if (navigator.getUserMedia) {
-        return navigator.getUserMedia(props, callback)
+        return navigator.webkitGetUserMedia(props, success, error);
+      } else if (navigator.mediaDevices.getUserMedia) {
+        return navigator.mediaDevices.getUserMedia(props)
+          .then(success)
+          .catch(error);
       } else {
         return undefined; 
       }

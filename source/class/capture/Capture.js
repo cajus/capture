@@ -271,7 +271,7 @@ qx.Class.define("capture.Capture",
      * @return {boolean}
      */  
     isSupported : function() {
-        return navigator.mediaDevices.getUserMedia != undefined || navigator.webkitGetUserMedia != undefined;
+        return navigator.mozGetUserMedia != undefined || navigator.webkitGetUserMedia != undefined;
     },
 
     // overridden
@@ -335,10 +335,8 @@ qx.Class.define("capture.Capture",
     __getUserMedia : function(props, success, error) {
       if (navigator.webkitGetUserMedia) {
         return navigator.webkitGetUserMedia(props, success, error);
-      } else if (navigator.mediaDevices.getUserMedia) {
-        return navigator.mediaDevices.getUserMedia(props)
-          .then(success)
-          .catch(error);
+      } else if (navigator.mozGetUserMedia) {
+        return navigator.mozGetUserMedia(props, success, error);
       } else {
         return undefined; 
       }

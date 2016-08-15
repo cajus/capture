@@ -44,7 +44,7 @@
 /**
  * This is the main class of contribution "capture"
  *
- * @lint ignoreUndefined(windowURL)
+ * @ignore(windowURL,windowURL.createObjectURL)
  */
 qx.Class.define("capture.Capture",
 {

@@ -156,10 +156,6 @@ qx.Class.define("capture.Capture",
    __stream: null,
    __video: null,
 
-    getVideo: function() {
-      return this.__video;
-    },
-
     /* Returns calculated image details, like clipping and the source dimensions
      * to use while generating the resulting image.
      * */
@@ -199,26 +195,24 @@ qx.Class.define("capture.Capture",
       this.__getUserMedia({video: true}, function(stream) {
         var windowURL = window.URL || window.webkitURL;
 
-        var video = this.getVideo();
-
         if (windowURL) {
-          video.setSource(windowURL.createObjectURL(stream));
+          this.__video.setSource(windowURL.createObjectURL(stream));
         } else {
-          video.setSource(stream); // Opera.
+          this.__video.setSource(stream); // Opera.
         }
 
-        video.onerror = function() {
+        this.__video.onerror = function() {
           this.setError(this.tr("Error capturing the video stream!"));
           this.stop();
         };
       
         stream.onended = function() {
           this.fireEvent("stop");
-        };
+        }.bind(this);
         
-        this.getContentElement().getDomElement().appendChild(video.getMediaObject());
+        this.getContentElement().getDomElement().appendChild(this.__video.getMediaObject());
         this.__stream = stream;
-        that.fireEvent("start"); 
+        this.fireEvent("start");
 
       }.bind(this), function() {
         this.setError(this.tr("Error capturing the video stream!"));

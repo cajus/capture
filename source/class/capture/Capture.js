@@ -156,6 +156,9 @@ qx.Class.define("capture.Capture",
    __stream: null,
    __video: null,
 
+    getVideo: function() {
+      return this.__video;
+    },
 
     /* Returns calculated image details, like clipping and the source dimensions
      * to use while generating the resulting image.
@@ -187,7 +190,6 @@ qx.Class.define("capture.Capture",
      * Start life video capturing.
      */
     start : function() {
-      var that = this;
 
       // Ignore start if we're already running
       if (this.__stream) {
@@ -195,33 +197,33 @@ qx.Class.define("capture.Capture",
       }
 
       this.__getUserMedia({video: true}, function(stream) {
-        windowURL = window.URL || window.webkitURL;
+        var windowURL = window.URL || window.webkitURL;
+
+        var video = this.getVideo();
 
         if (windowURL) {
-          that.__video.setSource(windowURL.createObjectURL(stream));
+          video.setSource(windowURL.createObjectURL(stream));
         } else {
-          that.__video.setSource(stream); // Opera.
+          video.setSource(stream); // Opera.
         }
-      
-        that.__video.onerror = function(e) {
-          that.__msg.setValue(this.tr("Error capturing the video stream!"));
-          that.__msg.show();
-          that.__stop();
+
+        video.onerror = function() {
+          this.setError(this.tr("Error capturing the video stream!"));
+          this.stop();
         };
       
-        stream.onended = function(e) {
-          that.fireEvent("stop"); 
+        stream.onended = function() {
+          this.fireEvent("stop");
         };
         
-        that.getContentElement().getDomElement().appendChild(that.__video.getMediaObject());
-        that.__stream = stream;
+        this.getContentElement().getDomElement().appendChild(video.getMediaObject());
+        this.__stream = stream;
         that.fireEvent("start"); 
 
-      }, function(error){
-        that.__msg.setValue(this.tr("Error capturing the video stream!"));
-        that.__msg.show();
-        that.__stop();
-      });
+      }.bind(this), function() {
+        this.setError(this.tr("Error capturing the video stream!"));
+        this.stop();
+      }.bind(this));
     },
 
     /**
@@ -235,7 +237,9 @@ qx.Class.define("capture.Capture",
 
       var msTracks = this.__stream.getTracks();
       for (var track in msTracks){
-        msTracks[track].stop();
+        if (msTracks.hasOwnProperty(track)) {
+          msTracks[track].stop();
+        }
       }
 
       this.__stream = null;
@@ -310,7 +314,7 @@ qx.Class.define("capture.Capture",
     /**
      * Applies the error property
      */
-    _applyError : function(value, old)
+    _applyError : function(value)
     {
       var label = this.getChildControl("error-label", true);
       if (label) {

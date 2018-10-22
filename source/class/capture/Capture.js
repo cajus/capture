@@ -193,12 +193,11 @@ qx.Class.define("capture.Capture",
       }
 
       this.__getUserMedia({video: true}, function(stream) {
-        var windowURL = window.URL || window.webkitURL;
-
-        if (windowURL) {
-          this.__video.setSource(windowURL.createObjectURL(stream));
-        } else {
-          this.__video.setSource(stream); // Opera.
+        try {
+          this.__video.getMediaObject().srcObject = stream;
+        }
+        catch (error) {
+          this.__video.setSource(URL.createObjectURL(stream));
         }
 
         this.__video.onerror = function() {
